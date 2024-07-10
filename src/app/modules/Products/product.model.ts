@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import { TInventory, TProduct } from "./product.interface";
 import slugify from "slugify";
+import { string } from "zod";
 
 const inventorySchema = new Schema<TInventory>({
   quantity: {
@@ -13,13 +14,7 @@ const inventorySchema = new Schema<TInventory>({
   },
 });
 
-const categorySchema = new Schema({
-  category: {
-    type: String,
-    enum: ['featured', 'regular'],
-    required: [true, 'Category is required'],
-  },
-});
+
 
 const productSchema = new Schema<TProduct>({
   image: {
@@ -51,7 +46,7 @@ const productSchema = new Schema<TProduct>({
     required: [true, 'Description is required'],
   },
   category: {
-    type: categorySchema,
+    type: String,
     required: [true, 'Category is required'],
   },
   inventory: {

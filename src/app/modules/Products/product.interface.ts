@@ -3,9 +3,7 @@ export type TInventory = {
     inStock: boolean;
 };
 
-type TCategory = {
-    category: 'featured' | 'regular'
-}
+
 export type TProduct = {
   
   image: string; 
@@ -15,7 +13,7 @@ export type TProduct = {
   price: number; 
   rating: number;
   description: string;
-  category: TCategory;
+  category: string;
   inventory: TInventory;
 };
 
