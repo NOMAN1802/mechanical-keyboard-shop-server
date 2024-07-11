@@ -18,16 +18,15 @@ const createOrder = async (req: Request, res: Response) => {
       });
     }
     // Check  availability
-    if (zodParsedData.quantity > orderedProduct.inventory.quantity) {
+    if (zodParsedData.quantity > orderedProduct.availableQuantity) {
       return res.status(400).json({
         success: false,
         message: "Requested quantity exceeds available stock",
       });
     }
     // Decrease  quantity
-    orderedProduct.inventory.quantity -= zodParsedData.quantity;
-    // Update inStock status
-    orderedProduct.inventory.inStock = orderedProduct.inventory.quantity > 0;
+    orderedProduct.availableQuantity -= zodParsedData.quantity;
+    
     await orderedProduct.save();
     const result = await OrderServices.createOrder(zodParsedData);
     return res.status(200).json({

@@ -1,18 +1,6 @@
 import { Schema, model } from "mongoose";
-import { TInventory, TProduct } from "./product.interface";
+import {  TProduct } from "./product.interface";
 import slugify from "slugify";
-import { string } from "zod";
-
-const inventorySchema = new Schema<TInventory>({
-  quantity: {
-    type: Number,
-    required: [true, 'Quantity is required'],
-  },
-  inStock: {
-    type: Boolean,
-    required: [true, 'Stock status is required'],
-  },
-});
 
 
 
@@ -29,10 +17,7 @@ const productSchema = new Schema<TProduct>({
     type: String,
     required: [true, 'Brand is required'],
   },
-  availableQuantity: {
-    type: Number,
-    required: [true, 'Available quantity is required'],
-  },
+ 
   price: {
     type: Number,
     required: [true, 'Price is required'],
@@ -49,9 +34,9 @@ const productSchema = new Schema<TProduct>({
     type: String,
     required: [true, 'Category is required'],
   },
-  inventory: {
-    type: inventorySchema,
-    required: [true, 'Inventory is required'],
+  availableQuantity: {
+    type: Number,
+    required: [true, 'AvailableQuantity is required'],
   },
 });
 
