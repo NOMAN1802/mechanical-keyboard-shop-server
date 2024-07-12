@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { ProductServices } from "./product.service"
 import { TProduct } from "./product.interface";
 
-import ProductZodSchema from "./product.validation";
+import { ProductValidation } from "./product.validation";
 
 // create a product
 const createProduct = async (req: Request, res:Response)=>{
@@ -10,7 +10,7 @@ const createProduct = async (req: Request, res:Response)=>{
 try{
     const productData:TProduct = req.body;
     // Validation using Zod
-    const zodParsedData = ProductZodSchema.parse(productData);
+    const zodParsedData = ProductValidation.ProductZodSchema.parse(productData);
 
     const result = await ProductServices.createProduct(zodParsedData)
     res.json({
@@ -95,7 +95,7 @@ const getSingleProduct = async (req: Request, res: Response) => {
     const { productId } = req.params;
     const updateData = req.body;
 
-    const zodParsedData = ProductZodSchema.parse(updateData);
+    const zodParsedData = ProductValidation.UpdateProductZodSchema.parse(updateData);
     const result = await ProductServices.updateProductDB(productId, zodParsedData);
   
       res.status(200).json({

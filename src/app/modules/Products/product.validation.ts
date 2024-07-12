@@ -13,6 +13,17 @@ const ProductZodSchema = z.object({
   availableQuantity: z.number().positive("Quantity must be a positive number"),
 });
 
+const UpdateProductZodSchema = z.object({
+  image: z.string().optional(),
+  title: z.string().max(30, "Title cannot be more than 30 characters").optional(),
+  brand: z.string().optional(),
+  price: z.number().positive("Price must be a positive number.").optional(),
+  rating: z.number().max(5, "Rating cannot be more than 5.").optional(),
+  description: z.string().max(350, "Description cannot be more than 350 characters").optional(),
+  category: z.string().optional(),
+  availableQuantity: z.number().positive("Quantity must be a positive number").optional(),
+})
 
 
-export default ProductZodSchema;
+
+export const ProductValidation =  {ProductZodSchema,UpdateProductZodSchema };
