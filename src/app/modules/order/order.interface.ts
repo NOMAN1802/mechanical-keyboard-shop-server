@@ -1,18 +1,17 @@
-export type TOrder = {
-    
-    productId: string;
-    price: number;
-    quantity: number;
-  };
+import { Types } from "mongoose";
 
+export type TOrdered = {
+  product: Types.ObjectId;
+  quantity: number;
+};
+export type TOrderInfo = {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  products: [TOrdered];
+  payment: TPaymentMethod;
+};
 
-  // export type TOrderInfo = {
-  //   name: string;
-  //   phone: string;
-  //   email: string;
-  //   deliveryAddress: string;
-  //   totalPrice: number;
-  //   orderStatus: "unpaid" | "paid" | "confirmed" | "delivered";
-  //   orders: TOrder [];
-  //   isDeleted?: boolean;
-  // };
+export type TPaymentMethod = "cashOnDelivery" | "stripe";
+

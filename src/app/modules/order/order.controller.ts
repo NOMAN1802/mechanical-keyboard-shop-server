@@ -1,51 +1,69 @@
 import { Request, Response } from "express";
-import { TOrder } from "./order.interface";
+import { TOrderInfo } from "./order.interface";
 import { OrderServices } from "./order.service";
-import { Product  } from "../Products/product.model";
+import { Product } from "../Products/product.model";
 import OrderZodSchema from "./order.validation";
+import { z } from "zod";
 
 const createOrder = async (req: Request, res: Response) => {
   try {
-    const orderData: TOrder = req.body;
+    const orderData: TOrderInfo = req.body;
 
-    // Validation using Zod
-    const zodParsedData = OrderZodSchema.parse(orderData);
-    const orderedProduct = await Product.findById(zodParsedData.productId);
-    if (!orderedProduct) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
+    //! Validate request body using Zod
+    const validatedOrderData = OrderZodSchema.parse(orderData);
+
+    // Check if products in the order exist and have sufficient quantity
+    for (const orderedItem of validatedOrderData.products) {
+      const product = await Product.findById(orderedItem.product);
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: `Product with id ${orderedItem.product} not found`,
+        });
+      }
+      if (orderedItem.quantity > product.availableQuantity) {
+        return res.status(400).json({
+          success: false,
+          message: `Requested quantity for product ${product._id} exceeds available stock`,
+        });
+      }
     }
-    // Check  availability
-    if (zodParsedData.quantity > orderedProduct.availableQuantity) {
-      return res.status(400).json({
-        success: false,
-        message: "Requested quantity exceeds available stock",
-      });
+
+    //! Deduct available quantities from products
+    for (const orderedItem of validatedOrderData.products) {
+      const product = await Product.findById(orderedItem.product);
+      if (product) {
+        product.availableQuantity -= orderedItem.quantity;
+        await product.save();
+      }
     }
-    // Decrease  quantity
-    orderedProduct.availableQuantity -= zodParsedData.quantity;
-    
-    await orderedProduct.save();
-    const result = await OrderServices.createOrder(zodParsedData);
-    return res.status(200).json({
+
+    //! Create order
+    const result = await OrderServices.createOrder(validatedOrderData);
+
+    return res.status(201).json({
       success: true,
       message: "Order created successfully!",
       data: result,
     });
   } catch (error) {
+    //! Handle validation errors
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation error",
+        errors: error.errors.map((err) => err.message),
+      });
+    }
+    //! Handle other errors
     return res.status(500).json({
       success: false,
       message: "Something went wrong",
-      error: error,
+      error: error.message,
     });
   }
 };
 
-
-
 export const OrderControllers = {
   createOrder,
-  
 };

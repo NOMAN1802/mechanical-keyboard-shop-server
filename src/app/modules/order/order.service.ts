@@ -6,7 +6,7 @@ const createOrder = async (orderData: TOrder)=> {
      
       // create the order to database
       const result = await OrderModel.create(orderData);
-      console.log(result);
+      ;
     
       return result;
   };
