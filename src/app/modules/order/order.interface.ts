@@ -1,17 +1,14 @@
-import { Types } from "mongoose";
-
+// order.interface.ts
 export type TOrdered = {
-  product: Types.ObjectId;
+  product: string;
   quantity: number;
 };
+
 export type TOrderInfo = {
   name: string;
   email: string;
   phoneNumber: string;
   address: string;
-  products: [TOrdered];
-  payment: TPaymentMethod;
+  products: TOrdered[];  
+  payment: "cashOnDelivery" | "stripe";
 };
-
-export type TPaymentMethod = "cashOnDelivery" | "stripe";
-

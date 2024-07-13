@@ -1,35 +1,32 @@
-import { Request, Response } from "express"
-import { ProductServices } from "./product.service"
+import { Request, Response } from "express";
+import { ProductServices } from "./product.service";
 import { TProduct } from "./product.interface";
-
 import { ProductValidation } from "./product.validation";
+import httpStatus from "http-status";
 
 // create a product
-const createProduct = async (req: Request, res:Response)=>{
-  
-try{
-    const productData:TProduct = req.body;
+const createProduct = async (req: Request, res: Response) => {
+  try {
+    const productData: TProduct = req.body;
     // Validation using Zod
     const zodParsedData = ProductValidation.ProductZodSchema.parse(productData);
 
-    const result = await ProductServices.createProduct(zodParsedData)
+    const result = await ProductServices.createProduct(zodParsedData);
     res.json({
-        success: true,
-        message: "Product created successfully!",
-        data: result,
+      success: true,
+      message: "Product created successfully!",
+      data: result,
     });
-}catch(err){
+  } catch (err) {
     res.status(500).json({
-        success: false,
-        message:  "Could not create product!",
-        error: err,
-      });
-}
-
+      success: false,
+      message: "Could not create product!",
+      error: err,
+    });
+  }
 };
 
 // get all products & search by name
-
 const getProducts = async (req: Request, res: Response) => {
   try {
     const searchTerm = req.query.searchTerm as string | undefined;
@@ -37,9 +34,10 @@ const getProducts = async (req: Request, res: Response) => {
     if (searchTerm) {
       // If the searchTerm query parameter is present, search products by name
       const productData = await ProductServices.searchProductsByName(searchTerm);
-      const message = productData.length !== 0
-        ? `Products found successfully with name matching: ${searchTerm}`
-        : `No products found with name matching: ${searchTerm}`;
+      const message =
+        productData.length !== 0
+          ? `Products found successfully with name matching: ${searchTerm}`
+          : `No products found with name matching: ${searchTerm}`;
 
       res.status(200).json({
         success: true,
@@ -67,55 +65,51 @@ const getProducts = async (req: Request, res: Response) => {
 };
 
 // Get a single product by id
-
 const getSingleProduct = async (req: Request, res: Response) => {
-    try{
+  try {
     const { productId } = req.params;
-    const result = await ProductServices.getSingleProduct(productId)
+    const result = await ProductServices.getSingleProduct(productId);
 
     res.status(200).json({
       success: true,
-      message: 'Product is retrieved successfully',
+      message: "Product is retrieved successfully",
       data: result,
-    })
-    }catch(err){
-     
-      res.status(500).json({
-        success: false,
-        message:  'Failed to retrieve product',
-        error: err,
     });
-    }
-  };
-
-// Update a product by id
-
- const updateProduct = async (req: Request, res: Response) => {
-  try {
-    const { productId } = req.params;
-    const updateData = req.body;
-
-    const zodParsedData = ProductValidation.UpdateProductZodSchema.parse(updateData);
-    
-    const result = await ProductServices.updateProductDB(productId, zodParsedData);
-  
-      res.status(200).json({
-        success: true,
-        message: 'Product updated successfully!',
-        data: result,
-      });
-   
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: err || 'Something went wrong',
+      message: "Failed to retrieve product",
       error: err,
     });
   }
 };
 
-// Delete a product
+// Update a product by id
+const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+    const updateData = req.body;
 
+    const result = await ProductServices.updateProductDB(productId, updateData );
+
+    res.status(200).json({
+      success: true,
+      message: "Product is retrieved successfully",
+      data: result,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve product",
+      error: err,
+    });
+  }
+};
+
+
+
+
+// Delete a product
 const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const { productId } = req.params;
@@ -123,23 +117,21 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
     console.log(deletedProduct);
     res.status(200).json({
       success: true,
-      message: 'Product deleted successfully',
-      data: null ,
+      message: "Product deleted successfully",
+      data: null,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error|| 'Could not delete product',
+      message: error instanceof Error ? error.message : "Could not delete product",
     });
   }
 };
 
-    
 export const ProductControllers = {
-    createProduct,
-    getProducts,
-    getSingleProduct,
-    updateProduct,
-    deleteProduct,
-    
-}
+  createProduct,
+  getProducts,
+  getSingleProduct,
+  updateProduct,
+  deleteProduct,
+};

@@ -55,11 +55,14 @@ const createOrder = async (req: Request, res: Response) => {
         errors: error.errors.map((err) => err.message),
       });
     }
+
     //! Handle other errors
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
     return res.status(500).json({
       success: false,
       message: "Something went wrong",
-      error: error.message,
+      error: errorMessage,
     });
   }
 };
