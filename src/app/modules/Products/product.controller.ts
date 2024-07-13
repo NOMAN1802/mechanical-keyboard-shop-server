@@ -96,6 +96,7 @@ const getSingleProduct = async (req: Request, res: Response) => {
     const updateData = req.body;
 
     const zodParsedData = ProductValidation.UpdateProductZodSchema.parse(updateData);
+    
     const result = await ProductServices.updateProductDB(productId, zodParsedData);
   
       res.status(200).json({
