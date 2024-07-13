@@ -6,7 +6,7 @@
 - In this  e-commearce Application backend project
  -------------------------------------------------  
 
-- Administrators will have powerful tools for managing products, and users will enjoy features like fast search, page refresh warnings, and filtering. Optional integration with Stripe ensures secure payments. Our goal is to create a modern and user-friendly online store for mechanical keyboard enthusiasts.
+- Administrators will have powerful tools for managing products, and users will enjoy features like fast search, page refresh warnings, and filtering, ensures secure payments. Our goal is to create a modern and user-friendly online store for mechanical keyboard enthusiasts.
 
 
 
@@ -44,13 +44,13 @@
 #### Clone the project
 
 ```bash
-  
+  git clone <git link>
 ```
 
 #### Go to the project directory
 
 ```bash
-  cd mechanical-keyboad-server
+  cd <Project name>
 ```
 
 #### Install dependencies
